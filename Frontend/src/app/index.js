@@ -1,8 +1,27 @@
-import { Text, View, StyleSheet, StatusBar, TouchableOpacity, Image } from "react-native";
+import { useEffect} from "react";
+import { Text, View, StyleSheet, Image } from "react-native";
 import logo from '../../assets/logo.png';
 import HomeHeader from "../components/homeHeader";
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from "expo-location";
 
 export default function Home() {
+
+    async function requestLocPermission() {
+        try {
+            const { granted } = await requestForegroundPermissionsAsync();
+            if (!granted) {
+                Alert.alert('Precisamos de sua permissão para obter a localização');
+            }
+        } catch (error) {
+            console.error("Erro ao obter permissão de localização:", error);
+        }
+    }
+
+    useEffect(() => {
+        requestLocPermission();
+    }, []);
+    
+
     return (
         <View style={styles.container}>
             <HomeHeader/>

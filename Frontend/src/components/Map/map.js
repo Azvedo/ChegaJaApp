@@ -1,54 +1,66 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import { View, StyleSheet, ActivityIndicator } from "react-native";
+import MapView, { Marker, Circle } from "react-native-maps";
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync, watchPositionAsync, LocationAccuracy } from "expo-location";
 
 
-export default function Map() {
+export default function Map({distanceRadius}) {
 
-    const [location, setLocation] = useState(null);
+    const [loc, setLoc] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    async function requestLocPermission() {
-        const { granted } = await requestForegroundPermissionsAsync();
-        if (!granted) {
-            Alert.alert('Precisamos de sua permissão para obter a localização');
-        } else {
-            const currentPosition = await getCurrentPositionAsync();
-            setLocation(currentPosition);
+    useEffect(() => {
+        const startWatching = async () => {
+            const locationSubscription = await watchPositionAsync({
+                accuracy: LocationAccuracy.Highest,
+                timeInterval: 1000,
+                distanceInterval: 1
+            }, (response) => {
+                setLoc(response.coords);
+                setLoading(false);
+                console.log(response.coords);
+            })
         }
+
+        startWatching();
+    }, []);
+
+
+    if (loading || !loc) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
     }
-
-    useEffect(() => {
-        requestLocPermission();
-    }, []);
-
-    useEffect(() => {
-        watchPositionAsync({
-            accuracy: LocationAccuracy.Highest,
-            timeInterval: 1000,
-            distanceInterval: 1
-        }, (response) => {
-            setLocation(response);
-            console.log(response.coords);
-        })
-    }, []);
 
     return (
         <View style={styles.mapContainer}>
             <MapView
                 style={styles.map}
                 initialRegion={{
-                    latitude: location ? location.coords.latitude : 0,
-                    longitude: location ? location.coords.longitude : 0,
+                    latitude: loc.latitude,
+                    longitude: loc.longitude,
                     latitudeDelta: 0.005,
                     longitudeDelta: 0.005
                 }}
             >
                 <Marker
                     coordinate={{
-                        latitude: location ? location.coords.latitude : 0,
-                        longitude: location ? location.coords.longitude : 0
+                        latitude: loc.latitude,
+                        longitude: loc.longitude
                     }}
+                />
+                
+                {/* Circle vai ser usado para criar um raio de alcance para o alarme| recebendo latitude e longitude do destino  */}
+                <Circle 
+                    center={{ 
+                        latitude: loc.latitude,  
+                        longitude: loc.longitude
+                    }}
+                    radius={distanceRadius}
+                    fillColor="rgba(0, 0, 255, 0.3)"
+                    strokeColor="rgba(0, 0, 255, 0.0)"
                 />
             </MapView>
 
@@ -68,5 +80,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
+
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 
 })
