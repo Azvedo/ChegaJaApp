@@ -2,7 +2,7 @@ import { useEffect} from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import logo from '../../assets/logo.png';
 import HomeHeader from "../components/homeHeader";
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from "expo-location";
+import { requestForegroundPermissionsAsync} from "expo-location";
 
 export default function Home() {
 

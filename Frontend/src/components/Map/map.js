@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync, watchPositionAsync, LocationAccuracy } from "expo-location";
 
 
-export default function Map({distanceRadius}) {
+export default function Map({distanceRadius , location}) {
 
     const [loc, setLoc] = useState(null);
     const [loading, setLoading] = useState(true);
+
+    const mapRef = useRef(null);
 
     useEffect(() => {
         const startWatching = async () => {
@@ -18,7 +20,6 @@ export default function Map({distanceRadius}) {
             }, (response) => {
                 setLoc(response.coords);
                 setLoading(false);
-                console.log(response.coords);
             })
         }
 
@@ -26,7 +27,7 @@ export default function Map({distanceRadius}) {
     }, []);
 
 
-    if (loading || !loc) {
+    if (loading || !loc || !location) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
@@ -37,26 +38,28 @@ export default function Map({distanceRadius}) {
     return (
         <View style={styles.mapContainer}>
             <MapView
+                ref={mapRef}
                 style={styles.map}
                 initialRegion={{
-                    latitude: loc.latitude,
-                    longitude: loc.longitude,
+                    latitude: location ? location.lat : loc.latitude,
+                    longitude: location ? location.lng : loc.longitude,
                     latitudeDelta: 0.005,
                     longitudeDelta: 0.005
                 }}
             >
                 <Marker
                     coordinate={{
-                        latitude: loc.latitude,
-                        longitude: loc.longitude
+                        latitude: location.lat,
+                        longitude: location.lng
                     }}
                 />
+
                 
                 {/* Circle vai ser usado para criar um raio de alcance para o alarme| recebendo latitude e longitude do destino  */}
                 <Circle 
                     center={{ 
-                        latitude: loc.latitude,  
-                        longitude: loc.longitude
+                        latitude: location ? location.lat : 0,  
+                        longitude: location ? location.lng : 0
                     }}
                     radius={distanceRadius}
                     fillColor="rgba(0, 0, 255, 0.3)"
@@ -71,6 +74,7 @@ export default function Map({distanceRadius}) {
 
 const styles = StyleSheet.create({
     mapContainer: {
+        zIndex: 0,
         width: '100%',
         height: "69%",
         justifyContent: 'center',
