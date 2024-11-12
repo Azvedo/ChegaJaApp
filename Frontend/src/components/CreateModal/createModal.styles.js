@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'rgba(27, 32, 56, 1)', // Fundo semitransparente
     },
+
     modalView: {
         position: 'absolute',
         top: '4%',
@@ -27,6 +28,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 2,
         elevation: 5,
     },
+
     buttonContainer: {
         paddingTop: 8,
         flexDirection: 'row',
@@ -50,24 +52,55 @@ export const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 24,
         paddingVertical: 10,
-        flexDirection: 'row',
         gap: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 20,
     },
 
+
     formInput: {
-        width: '86%',
+        flex: 1,
+        width: '50%',
         justifyContent: 'center',
-        alignItems: 'center',
     },
 
     input: {
         width: '100%',
-        height: 36,
         padding: 10,
-        backgroundColor: '#EDECEC',
-        marginBottom: 20,
-        fontSize: 16,
-        fontWeight: '500',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 2,
+        color: 'black',
+        marginBottom: 10,
+    },
+
+
+    autocompleteContainer: {
+        flex: 1,
+        zIndex: 10, // Para garantir que a lista de resultados apareça acima de outros componentes
+    },
+
+    listView: {
+        top: 40,
+        position: 'absolute',
+        backgroundColor: 'white',
+        height: 240,
+        zIndex: 10,
+    },
+
+    row: {
+        padding: 13,
+        height: 44,
+        flexDirection: 'row',
+    },
+
+    description: {
+        fontWeight: 'bold',
+    },
+
+    predefinedPlacesDescription: {
+        color: '#1faadb',
     },
 
     distToAlarm: {
@@ -102,6 +135,7 @@ export const styles = StyleSheet.create({
         height: 48,
         paddingHorizontal: 24,
         marginBottom: 10,
+        zIndex: 1,
     },
 
 });

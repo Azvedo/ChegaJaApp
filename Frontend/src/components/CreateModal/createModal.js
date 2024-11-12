@@ -1,18 +1,24 @@
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Modal, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { styles } from './createModal.styles';
 import Map from '../Map/map';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import 'react-native-get-random-values';
 
 
 export default function CreateModal({ visible, toggleModal }) {
     const distances = [
-        { label: '250 m', value: 250 },
-        { label: '500 m', value: 500 },
         { label: '1 km', value: 1000 },
         { label: '1.5 km', value: 1500 },
         { label: '2 km', value: 2000 },
+        { label: '2.5 km', value: 2500 },
+        { label: '3 km', value: 3000 },
     ];
+
+    const [distanceRadius, setDistanceRadius] = useState(0);
+    const [destination, setDestination] = useState(null);
 
     return (
         <Modal
@@ -34,7 +40,26 @@ export default function CreateModal({ visible, toggleModal }) {
                     <View style={styles.form}>
                         <Ionicons name="location" size={28} color="#fff" />
                         <View style={styles.formInput}>
-                            <TextInput placeholder="Qual o seu destino ?" style={styles.input} placeholderTextColor={"#979797"} />
+                            <GooglePlacesAutocomplete
+                                placeholder='Qual o seu destino ?'
+                                fetchDetails={true}
+                                onPress={(data, details = null) => {
+                                    setDestination(details.geometry.location);
+                                }}
+                                query={{
+                                    key: 'AIzaSyCN0XipoEzmuwweAkJM3PPUAXXhF4KqsJQ',
+                                    language: 'pt-br',
+                                }}
+
+                                styles={{
+                                    textInput: styles.input,
+                                    container: styles.autocompleteContainer,
+                                    listView: styles.listView,
+                                    row: styles.row,
+                                    description: styles.description,
+                                    predefinedPlacesDescription: styles.predefinedPlacesDescription,
+                                }}
+                            />
                         </View>
                     </View>
                     <View style={styles.distToAlarm}>
@@ -45,14 +70,14 @@ export default function CreateModal({ visible, toggleModal }) {
                     </View>
                     <View style={styles.distToAlarmSelect}>
                         <RNPickerSelect
-                            onValueChange={(value) => console.log(value)}
+                            onValueChange={(value) => setDistanceRadius(value)}
                             items={distances}
                             placeholder={{ label: 'Selecione a distância', value: null }}
                             style={pickerSelectStyles}
                             useNativeAndroidPickerStyle={false}
                         />
                     </View>
-                    <Map />
+                    <Map distanceRadius={distanceRadius} location={destination} />
                 </View>
             </View>
         </Modal>
@@ -71,6 +96,7 @@ const pickerSelectStyles = StyleSheet.create({
         color: '#1B1D29',
         fontWeight: '700',
         marginBottom: 10,
+        borderRadius: 2,
     },
 
     inputAndroid: {
@@ -87,5 +113,6 @@ const pickerSelectStyles = StyleSheet.create({
         marginBottom: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        borderRadius: 2,
     },
 });
