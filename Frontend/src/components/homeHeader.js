@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity} from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
 import CreateModal from "./createModal";
@@ -24,7 +24,6 @@ export default function HomeHeader() {
                 visible={modalVisible}
                 toggleModal={toggleModal}
             />
-
         </View>
     );
 }

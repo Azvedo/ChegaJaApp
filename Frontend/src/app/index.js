@@ -1,9 +1,8 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import logo from '../../assets/logo.png';
 import HomeHeader from "../components/homeHeader";
-import { requestForegroundPermissionsAsync} from "expo-location";
-import { Alarms } from "../constants/bdTest";
+import { requestForegroundPermissionsAsync } from "expo-location";
 
 export default function Home() {
 
@@ -21,26 +20,17 @@ export default function Home() {
     useEffect(() => {
         requestLocPermission();
     }, []);
-    
+
 
     return (
         <View style={styles.container}>
-            <HomeHeader/>
+            <HomeHeader />
             <View style={styles.header}>
-                <Image source={logo} style={styles.logo}/>
+                <Image source={logo} style={styles.logo} />
                 <Text style={styles.name_title}> ChegaJá </Text>
             </View>
             <View style={styles.alarms}>
-            {Alarms.length === 0 ? (
-                    <Text style={styles.dontHave}> Você Não Possui Alarmes </Text>
-                ) : (
-                    Alarms.map((alarm, index) => (
-                        <View key={index} style={styles.alarmItem}>
-                            <Text style={styles.alarmText}>Destino: {alarm.destination.lat}, {alarm.destination.lng}</Text>
-                            <Text style={styles.alarmText}>Distância: {alarm.distanceRadius} metros</Text>
-                        </View>
-                    ))
-                )}
+                <Text style={styles.dontHave}> Você Não Possui Alarmes </Text>
             </View>
         </View>
     );

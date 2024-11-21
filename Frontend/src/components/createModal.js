@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Modal, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { styles } from './createModal.styles';
 import Map from './map';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
-import {postLocation} from '../services/axiosCalls';
+import { postLocation } from '../services/axiosCalls';
 
 export default function CreateModal({ visible, toggleModal }) {
     const distances = [
@@ -17,22 +17,35 @@ export default function CreateModal({ visible, toggleModal }) {
         { label: '3 km', value: 3000 },
     ];
 
-    const [distanceRadius, setDistanceRadius] = useState(0);
+    const [distanceRadius, setDistanceRadius] = useState(null);
     const [destination, setDestination] = useState(null);
 
-    const saveAlarm = async ({ destination, distanceRadius }) => {
+    const isValid = destination && distanceRadius;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
+
+    const saveAlarm = async () => {
+        if (!isValid) {
+            Alert.alert('Erro', 'Por favor, selecione um destino e uma distância válida.');
+            return;
+        }
+
         try {
             const data = {
                 currentLocation: {
                     latitude: destination.lat,
                     longitude: destination.lng,
                 },
-                distance: distanceRadius
+                distance: distanceRadius,
             };
 
             const response = await postLocation(data);
             Alert.alert('Sucesso!', response.message || 'Localização salva com sucesso!');
+
+            setDestination(null);
+            setDistanceRadius(null);
+            toggleModal();
+
         } catch (error) {
+            console.error('Erro ao salvar localização:', error);
             Alert.alert('Erro', 'Não foi possível salvar a localização.');
         }
     };
@@ -47,18 +60,23 @@ export default function CreateModal({ visible, toggleModal }) {
             <View style={styles.modalContainer}>
                 <View style={styles.modalView}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={() => toggleModal()} style={styles.button}>
+                        <TouchableOpacity onPress={toggleModal} style={styles.button}>
                             <Text style={styles.buttonText}>Cancelar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { saveAlarm(destination, distanceRadius) }} style={styles.button}>
+                        <TouchableOpacity
+                            onPress={saveAlarm}
+                            style={[styles.button, { opacity: isValid ? 1 : 0.5 }]}
+                            disabled={!isValid}
+                        >
                             <Text style={styles.buttonText}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
+
                     <View style={styles.form}>
                         <Ionicons name="location" size={28} color="#fff" />
                         <View style={styles.formInput}>
                             <GooglePlacesAutocomplete
-                                placeholder='Qual o seu destino ?'
+                                placeholder="Qual o seu destino?"
                                 fetchDetails={true}
                                 onPress={(data, details = null) => {
                                     setDestination(details.geometry.location);
@@ -67,7 +85,6 @@ export default function CreateModal({ visible, toggleModal }) {
                                     key: 'AIzaSyCN0XipoEzmuwweAkJM3PPUAXXhF4KqsJQ',
                                     language: 'pt-br',
                                 }}
-
                                 styles={{
                                     textInput: styles.input,
                                     container: styles.autocompleteContainer,
@@ -79,12 +96,17 @@ export default function CreateModal({ visible, toggleModal }) {
                             />
                         </View>
                     </View>
+
                     <View style={styles.distToAlarm}>
                         <Text style={styles.distToAlarmText}>Distância para o alarme:</Text>
-                        <TouchableOpacity style={styles.infoIcon} onPressIn={() => { Alert.alert("Distância do destino para disparar o alarme") }}>
+                        <TouchableOpacity
+                            style={styles.infoIcon}
+                            onPress={() => Alert.alert('Distância do destino para disparar o alarme')}
+                        >
                             <Ionicons name="information" size={14} color="#1B1D29" />
                         </TouchableOpacity>
                     </View>
+
                     <View style={styles.distToAlarmSelect}>
                         <RNPickerSelect
                             onValueChange={(value) => setDistanceRadius(value)}
