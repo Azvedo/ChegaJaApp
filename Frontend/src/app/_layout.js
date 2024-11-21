@@ -7,7 +7,6 @@ const Layout = () => {
             <StatusBar barStyle={"light-content"} />
             <Stack screenOptions={{ headerShown: false }} />
         </>
-
     );
 };
 

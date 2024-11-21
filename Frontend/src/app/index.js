@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Image } from "react-native";
 import logo from '../../assets/logo.png';
 import HomeHeader from "../components/homeHeader";
 import { requestForegroundPermissionsAsync} from "expo-location";
+import { Alarms } from "../constants/bdTest";
 
 export default function Home() {
 
@@ -30,8 +31,16 @@ export default function Home() {
                 <Text style={styles.name_title}> ChegaJá </Text>
             </View>
             <View style={styles.alarms}>
-                {/* if(alarms)else */}
-                <Text style={styles.dontHave}> Você Não Possui Alarmes </Text>
+            {Alarms.length === 0 ? (
+                    <Text style={styles.dontHave}> Você Não Possui Alarmes </Text>
+                ) : (
+                    Alarms.map((alarm, index) => (
+                        <View key={index} style={styles.alarmItem}>
+                            <Text style={styles.alarmText}>Destino: {alarm.destination.lat}, {alarm.destination.lng}</Text>
+                            <Text style={styles.alarmText}>Distância: {alarm.distanceRadius} metros</Text>
+                        </View>
+                    ))
+                )}
             </View>
         </View>
     );

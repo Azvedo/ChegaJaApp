@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { View, StyleSheet, ActivityIndicator } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync, watchPositionAsync, LocationAccuracy } from "expo-location";
+import { watchPositionAsync, LocationAccuracy } from "expo-location";
 
 
 export default function Map({distanceRadius , location}) {

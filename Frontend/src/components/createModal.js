@@ -3,10 +3,10 @@ import { View, Text, TouchableOpacity, TextInput, Modal, Alert, StyleSheet } fro
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { styles } from './createModal.styles';
-import Map from '../Map/map';
+import Map from './map';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
-
+import {postLocation} from '../services/axiosCalls';
 
 export default function CreateModal({ visible, toggleModal }) {
     const distances = [
@@ -19,6 +19,23 @@ export default function CreateModal({ visible, toggleModal }) {
 
     const [distanceRadius, setDistanceRadius] = useState(0);
     const [destination, setDestination] = useState(null);
+
+    const saveAlarm = async ({ destination, distanceRadius }) => {
+        try {
+            const data = {
+                currentLocation: {
+                    latitude: destination.lat,
+                    longitude: destination.lng,
+                },
+                distance: distanceRadius
+            };
+
+            const response = await postLocation(data);
+            Alert.alert('Sucesso!', response.message || 'Localização salva com sucesso!');
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível salvar a localização.');
+        }
+    };
 
     return (
         <Modal
@@ -33,7 +50,7 @@ export default function CreateModal({ visible, toggleModal }) {
                         <TouchableOpacity onPress={() => toggleModal()} style={styles.button}>
                             <Text style={styles.buttonText}>Cancelar</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { Alert.alert("Envia para o BD") }} style={styles.button}>
+                        <TouchableOpacity onPress={() => { saveAlarm(destination, distanceRadius) }} style={styles.button}>
                             <Text style={styles.buttonText}>Salvar</Text>
                         </TouchableOpacity>
                     </View>
