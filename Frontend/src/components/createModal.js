@@ -7,6 +7,8 @@ import Map from './map';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
 import { postLocation } from '../services/axiosCalls';
+import { API_KEY } from '@env';
+
 
 export default function CreateModal({ visible, toggleModal }) {
     const distances = [
@@ -82,7 +84,7 @@ export default function CreateModal({ visible, toggleModal }) {
                                     setDestination(details.geometry.location);
                                 }}
                                 query={{
-                                    key: 'AIzaSyCN0XipoEzmuwweAkJM3PPUAXXhF4KqsJQ',
+                                    key: API_KEY,
                                     language: 'pt-br',
                                 }}
                                 styles={{
