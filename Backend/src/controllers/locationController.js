@@ -11,7 +11,7 @@ const saveLocation = (req, res) => {
 
   // Adicionar ao "banco de dados"
   locations.push({currentLocation, distance});
-  console.log('Localizações:', locations);
+  console.log('Localizações:', locations); //apagar depois
 
   res.status(201).send({ message: 'Localização salva com sucesso!' });
 };
