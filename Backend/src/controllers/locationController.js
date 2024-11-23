@@ -1,19 +1,28 @@
+const { saveAlarm } = require('./firebaseController.js');
+
 const locations = []; // Simulação de um banco de dados
 
 // Controlador para salvar localização
-const saveLocation = (req, res) => {
-  const { currentLocation , distance } = req.body;
-  console.log('Localização atual:', currentLocation, distance);
+const saveLocation = async (req, res) => {
+    const { userId, currentLocation, distance } = req.body;
 
-  if (!currentLocation) {
-    return res.status(400).send({ error: 'Localização não fornecida' });
-  }
+    if (!currentLocation) {
+        return res.status(400).send({ error: 'Localização não fornecida' });
+    }
 
-  // Adicionar ao "banco de dados"
-  locations.push({currentLocation, distance});
-  console.log('Localizações:', locations); //apagar depois
+    try {
+        const result = await saveAlarm({
+            userId: userId,
+            currentLocation: currentLocation,
+            distance: distance,
+        });
 
-  res.status(201).send({ message: 'Localização salva com sucesso!' });
+        console.log('Localização salva no BD com sucesso!');
+        res.status(201).send({ message: 'Localização salva com sucesso!', alarmId: result.id });
+    } catch (error) {
+        console.error('Erro ao salvar localização:', error);
+        res.status(500).send({ error: 'Erro ao salvar localização. Tente novamente mais tarde.' });
+    }
 };
 
 // Controlador para listar todas as localizações (apenas para teste)

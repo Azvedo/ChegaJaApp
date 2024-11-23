@@ -4,9 +4,9 @@ const { saveLocation, getLocations } = require('../controllers/locationControlle
 const router = express.Router();
 
 // Rota para salvar localização
-router.post('/location', saveLocation);
+router.post('/alarm', saveLocation);
 
 // Rota para listar localizações
-router.get('/locations', getLocations);
+router.get('/alarms', getLocations);
 
 module.exports = router;
