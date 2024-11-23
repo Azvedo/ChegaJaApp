@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState} from 'react';
 import { View, Text, TouchableOpacity, Modal, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
@@ -8,6 +8,7 @@ import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplet
 import 'react-native-get-random-values';
 import { postLocation } from '../services/axiosCalls';
 import { API_KEY } from '@env';
+import { useUserId } from '../contexts/UserContext';
 
 
 export default function CreateModal({ visible, toggleModal }) {
@@ -21,15 +22,17 @@ export default function CreateModal({ visible, toggleModal }) {
 
     const [distanceRadius, setDistanceRadius] = useState(null);
     const [destination, setDestination] = useState(null);
-
+    
     const isValid = destination && distanceRadius;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
+
+    const userId = useUserId();
 
     const saveAlarm = async () => {
         if (!isValid) {
             Alert.alert('Erro', 'Por favor, selecione um destino e uma distância válida.');
             return;
         }
-
+        
         try {
             const data = {
                 currentLocation: {
@@ -37,6 +40,7 @@ export default function CreateModal({ visible, toggleModal }) {
                     longitude: destination.lng,
                 },
                 distance: distanceRadius,
+                userId: String(userId), // Adiciona o userId ao objeto data como string
             };
 
             const response = await postLocation(data);

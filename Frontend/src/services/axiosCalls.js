@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL base do backend, teste com o IP da máquina
-const baseURL = `http://192.168.10.78:3000`;
+const baseURL = `http://10.0.0.137:3000`;
 
 // Instância do Axios
 const api = axios.create({
@@ -14,7 +14,7 @@ const api = axios.create({
 // Função GET para buscar localizações
 export const getLocations = async () => {
   try {
-    const response = await api.get(`/api/locations`);
+    const response = await api.get(`/api/alarms`);
     return response.data;
   } catch (error) {
     console.error('Erro ao buscar localizações:', error);
@@ -25,7 +25,7 @@ export const getLocations = async () => {
 // Função POST para salvar localizações
 export const postLocation = async (data) => {
   try {
-    const response = await api.post(`/api/location`, data);
+    const response = await api.post(`/api/alarm`, data);
     return response.data;
   } catch (error) {
     console.error('Erro ao salvar localização:', error);

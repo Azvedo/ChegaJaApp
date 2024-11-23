@@ -1,12 +1,13 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'react-native';
+import { UserProvider } from '../contexts/UserContext';
 
 const Layout = () => {
     return (
-        <>
-            <StatusBar barStyle={"light-content"} />
-            <Stack screenOptions={{ headerShown: false }} />
-        </>
+            <UserProvider>
+                <StatusBar barStyle={"light-content"} />
+                <Stack screenOptions={{ headerShown: false }} />
+            </UserProvider>
     );
 };
 
