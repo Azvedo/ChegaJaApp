@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/alarm', saveLocation);
 
 // Rota para listar localizações
-router.get('/alarms', getLocations);
+// Estou usando post para poder enviar o userId no body da requisição
+router.post('/get-user-alarms', getLocations);
 
 module.exports = router;
