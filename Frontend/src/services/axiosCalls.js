@@ -11,18 +11,22 @@ const api = axios.create({
   },
 });
 
-// Função GET para buscar localizações
-export const getLocations = async () => {
+//função para buscar localizações
+export const getLocations = async (params) => {
+  if (!params || !params.userId) {
+    throw new Error('O parâmetro userId é obrigatório.');
+  }
+
   try {
-    const response = await api.get(`/api/alarms`);
-    return response.data;
+    const response = await api.post(`/api/get-user-alarms`, params);
+    return response.data; // Retorna os dados recebidos da API
   } catch (error) {
     console.error('Erro ao buscar localizações:', error);
     throw error; // Propaga o erro para lidar no componente
   }
 };
 
-// Função POST para salvar localizações
+// Função para salvar localizações
 export const postLocation = async (data) => {
   try {
     const response = await api.post(`/api/alarm`, data);

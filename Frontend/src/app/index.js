@@ -1,11 +1,18 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import logo from '../../assets/logo.png';
 import HomeHeader from "../components/homeHeader";
 import { requestForegroundPermissionsAsync } from "expo-location";
+import { getLocations } from "../services/axiosCalls";
+import { useUserId } from "../contexts/UserContext";
+
 
 export default function Home() {
 
+    const [alarms, setAlarms] = useState([]);
+    const userId = useUserId();
+    console.log(userId);
+    
     async function requestLocPermission() {
         try {
             const { granted } = await requestForegroundPermissionsAsync();
@@ -20,6 +27,20 @@ export default function Home() {
     useEffect(() => {
         requestLocPermission();
     }, []);
+    
+    useEffect(() => {
+        const fetchAlarms = async () => {
+            try {
+                const params = { userId: userId }; // Substitua pelo valor do parâmetro desejado
+                const alarmsData = await getLocations(params);
+                setAlarms(alarmsData);
+            } catch (error) {
+                console.error('Erro ao buscar os alarmes:', error);
+            }
+        };
+
+        fetchAlarms();
+    }, [userId]);
 
 
     return (

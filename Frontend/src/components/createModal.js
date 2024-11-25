@@ -22,8 +22,9 @@ export default function CreateModal({ visible, toggleModal }) {
 
     const [distanceRadius, setDistanceRadius] = useState(null);
     const [destination, setDestination] = useState(null);
+    const [locName, setLocName] = useState(null);
     
-    const isValid = destination && distanceRadius;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
+    const isValid = destination && distanceRadius && locName;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
 
     const userId = useUserId();
 
@@ -35,6 +36,7 @@ export default function CreateModal({ visible, toggleModal }) {
         
         try {
             const data = {
+                destination: locName,
                 currentLocation: {
                     latitude: destination.lat,
                     longitude: destination.lng,
@@ -44,7 +46,7 @@ export default function CreateModal({ visible, toggleModal }) {
             };
 
             const response = await postLocation(data);
-            Alert.alert('Sucesso!', response.message || 'Localização salva com sucesso!');
+            Alert.alert('Sucesso!' , 'Localização salva com sucesso!');
 
             setDestination(null);
             setDistanceRadius(null);
@@ -86,6 +88,7 @@ export default function CreateModal({ visible, toggleModal }) {
                                 fetchDetails={true}
                                 onPress={(data, details = null) => {
                                     setDestination(details.geometry.location);
+                                    setLocName(data.description);
                                 }}
                                 query={{
                                     key: API_KEY,
