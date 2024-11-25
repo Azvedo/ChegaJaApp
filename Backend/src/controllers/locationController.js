@@ -1,10 +1,8 @@
-const { saveAlarm } = require('./firebaseController.js');
-
-const locations = []; // Simulação de um banco de dados
+const { saveAlarm, getAlarms } = require('./firebaseController.js');
 
 // Controlador para salvar localização
 const saveLocation = async (req, res) => {
-    const { userId, currentLocation, distance } = req.body;
+    const { userId, currentLocation, distance, destination } = req.body;
 
     if (!currentLocation) {
         return res.status(400).send({ error: 'Localização não fornecida' });
@@ -12,6 +10,7 @@ const saveLocation = async (req, res) => {
 
     try {
         const result = await saveAlarm({
+            destination: destination,
             userId: userId,
             currentLocation: currentLocation,
             distance: distance,
@@ -25,9 +24,22 @@ const saveLocation = async (req, res) => {
     }
 };
 
-// Controlador para listar todas as localizações (apenas para teste)
+// Controloador para buscar localizações
 const getLocations = (req, res) => {
-  res.status(200).send({ locations });
+    const { userId } = req.body; // Obtém userId dos parâmetros da rota
+
+    if (!userId) {
+        return res.status(400).send({ error: 'O userId é obrigatório.' });
+    }
+    getAlarms(userId)
+        .then((alarms) => {
+            res.status(200).send(alarms);
+        })
+        .catch((error) => {
+            console.error('Erro ao buscar as localizações:', error);
+            res.status(500).send({ error: 'Erro ao buscar as localizações. Tente novamente mais tarde.' });
+        });
 };
+
 
 module.exports = { saveLocation, getLocations };
