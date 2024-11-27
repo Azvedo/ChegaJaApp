@@ -40,8 +40,6 @@ const getAlarms = async (userId) => {
         }
 
         const alarms = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(`Alarmes encontrados para o usuário ${userId}:`, alarms);
-
         return alarms;
     } catch (error) {
         console.error(`Erro ao buscar os alarmes para o usuário ${userId}:`, error);
