@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, Alert, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
@@ -11,7 +11,7 @@ import { API_KEY } from '@env';
 import { useUserId } from '../contexts/UserContext';
 
 
-export default function CreateModal({ visible, toggleModal }) {
+export default function CreateModal({ visible, toggleModal, handleSave }) {
     const distances = [
         { label: '1 km', value: 1000 },
         { label: '1.5 km', value: 1500 },
@@ -23,17 +23,18 @@ export default function CreateModal({ visible, toggleModal }) {
     const [distanceRadius, setDistanceRadius] = useState(null);
     const [destination, setDestination] = useState(null);
     const [locName, setLocName] = useState(null);
-    
+
     const isValid = destination && distanceRadius && locName;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
 
     const userId = useUserId();
+
 
     const saveAlarm = async () => {
         if (!isValid) {
             Alert.alert('Erro', 'Por favor, selecione um destino e uma distância válida.');
             return;
         }
-        
+
         try {
             const data = {
                 destination: locName,
@@ -46,15 +47,15 @@ export default function CreateModal({ visible, toggleModal }) {
             };
 
             const response = await postLocation(data);
-            Alert.alert('Sucesso!' , 'Localização salva com sucesso!');
 
             setDestination(null);
             setDistanceRadius(null);
+            handleSave(true, 'Alarme salvo com sucesso!');
             toggleModal();
 
         } catch (error) {
             console.error('Erro ao salvar localização:', error);
-            Alert.alert('Erro', 'Não foi possível salvar a localização.');
+            handleSave(false, 'Erro ao salvar alarme');
         }
     };
 
@@ -65,69 +66,71 @@ export default function CreateModal({ visible, toggleModal }) {
             visible={visible}
             onRequestClose={toggleModal}
         >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalView}>
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={toggleModal} style={styles.button}>
-                            <Text style={styles.buttonText}>Cancelar</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={saveAlarm}
-                            style={[styles.button, { opacity: isValid ? 1 : 0.5 }]}
-                            disabled={!isValid}
-                        >
-                            <Text style={styles.buttonText}>Salvar</Text>
-                        </TouchableOpacity>
-                    </View>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalView}>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={toggleModal} style={styles.button}>
+                                <Text style={styles.buttonText}>Cancelar</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={saveAlarm}
+                                style={[styles.button, { opacity: isValid ? 1 : 0.5 }]}
+                                disabled={!isValid}
+                            >
+                                <Text style={styles.buttonText}>Salvar</Text>
+                            </TouchableOpacity>
 
-                    <View style={styles.form}>
-                        <Ionicons name="location" size={28} color="#fff" />
-                        <View style={styles.formInput}>
-                            <GooglePlacesAutocomplete
-                                placeholder="Qual o seu destino?"
-                                fetchDetails={true}
-                                onPress={(data, details = null) => {
-                                    setDestination(details.geometry.location);
-                                    setLocName(data.description);
-                                }}
-                                query={{
-                                    key: API_KEY,
-                                    language: 'pt-br',
-                                }}
-                                styles={{
-                                    textInput: styles.input,
-                                    container: styles.autocompleteContainer,
-                                    listView: styles.listView,
-                                    row: styles.row,
-                                    description: styles.description,
-                                    predefinedPlacesDescription: styles.predefinedPlacesDescription,
-                                }}
+
+                        </View>
+
+                        <View style={styles.form}>
+                            <Ionicons name="location" size={28} color="#fff" />
+                            <View style={styles.formInput}>
+                                <GooglePlacesAutocomplete
+                                    placeholder="Qual o seu destino?"
+                                    fetchDetails={true}
+                                    onPress={(data, details = null) => {
+                                        setDestination(details.geometry.location);
+                                        setLocName(data.description);
+                                    }}
+                                    query={{
+                                        key: API_KEY,
+                                        language: 'pt-br',
+                                    }}
+                                    styles={{
+                                        textInput: styles.input,
+                                        container: styles.autocompleteContainer,
+                                        listView: styles.listView,
+                                        row: styles.row,
+                                        description: styles.description,
+                                        predefinedPlacesDescription: styles.predefinedPlacesDescription,
+                                    }}
+                                />
+                            </View>
+                        </View>
+
+                        <View style={styles.distToAlarm}>
+                            <Text style={styles.distToAlarmText}>Distância para o alarme:</Text>
+                            <TouchableOpacity
+                                style={styles.infoIcon}
+                                onPress={() => Alert.alert('Distância para o alarme', 'Selecione a distância em que deseja ser alertado.')}
+                            >
+                                <Ionicons name="information" size={14} color="#1B1D29" />
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.distToAlarmSelect}>
+                            <RNPickerSelect
+                                onValueChange={(value) => setDistanceRadius(value)}
+                                items={distances}
+                                placeholder={{ label: 'Selecione a distância', value: null }}
+                                style={pickerSelectStyles}
+                                useNativeAndroidPickerStyle={false}
                             />
                         </View>
+                        <Map distanceRadius={distanceRadius} location={destination} />
                     </View>
-
-                    <View style={styles.distToAlarm}>
-                        <Text style={styles.distToAlarmText}>Distância para o alarme:</Text>
-                        <TouchableOpacity
-                            style={styles.infoIcon}
-                            onPress={() => Alert.alert('Distância do destino para disparar o alarme')}
-                        >
-                            <Ionicons name="information" size={14} color="#1B1D29" />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={styles.distToAlarmSelect}>
-                        <RNPickerSelect
-                            onValueChange={(value) => setDistanceRadius(value)}
-                            items={distances}
-                            placeholder={{ label: 'Selecione a distância', value: null }}
-                            style={pickerSelectStyles}
-                            useNativeAndroidPickerStyle={false}
-                        />
-                    </View>
-                    <Map distanceRadius={distanceRadius} location={destination} />
                 </View>
-            </View>
         </Modal>
     );
 }

@@ -2,8 +2,9 @@ import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
 import CreateModal from "./createModal";
+import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
-export default function HomeHeader() {
+export default function HomeHeader({fetchAlarms}) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -11,30 +12,52 @@ export default function HomeHeader() {
         setModalVisible(!modalVisible);
     }
 
-    return (
-        <View style={styles.features}>
-            <TouchableOpacity >
-                <Text style={styles.edit}> Editar </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={toggleModal}>
-                <Ionicons name="add" size={32} color="white" />
-            </TouchableOpacity>
+    const handleSaveAlarm = (success, message) => {
+        if (success) {
+            Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Alarme salvo com sucesso!'});
+            fetchAlarms();
 
-            <CreateModal
-                visible={modalVisible}
-                toggleModal={toggleModal}
-            />
+        } else {
+            Toast.show({ type: ALERT_TYPE.DANGER, title: 'Erro ao salvar alarme', textBody: message });
+        }
+    };
+
+    return (
+        <View style={styles.test}>
+            <AlertNotificationRoot theme="dark">
+            <View style={styles.features}>
+                <TouchableOpacity >
+                    <Text style={styles.edit}> Editar </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={toggleModal}>
+                    <Ionicons name="add" size={32} color="white" />
+                </TouchableOpacity>
+
+                <CreateModal
+                    visible={modalVisible}
+                    toggleModal={toggleModal}
+                    handleSave={handleSaveAlarm}
+                />
+            </View>
+            </AlertNotificationRoot>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+
+    test: {
+        width: '100%',
+        height: '10%',
+    },
+
+
     features: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        height: '10%',
+        height: '100%',
         paddingHorizontal: 16,
     },
 
