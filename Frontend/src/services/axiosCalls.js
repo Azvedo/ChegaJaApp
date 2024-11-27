@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // URL base do backend, teste com o IP da máquina
-const baseURL = `http://10.0.0.137:3000`;
+const baseURL = `http://10.7.237.86:3000`;
 
 // Instância do Axios
 const api = axios.create({
