@@ -139,3 +139,37 @@ export const styles = StyleSheet.create({
     },
 
 });
+
+
+export const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        width: '100%',
+        height: 28,
+        marginTop: 10,
+        fontSize: 14,
+        paddingVertical: 12,
+        paddingHorizontal: 10,
+        backgroundColor: '#EDECEC',
+        color: '#1B1D29',
+        fontWeight: '700',
+        marginBottom: 10,
+        borderRadius: 2,
+    },
+
+    inputAndroid: {
+        width: 296,
+        height: 36,
+        marginTop: 10,
+        marginRight: '1%',
+        fontSize: 14,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        backgroundColor: '#EDECEC',
+        color: '#1B1D29',
+        fontWeight: '600',
+        marginBottom: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 2,
+    },
+});

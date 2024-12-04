@@ -16,7 +16,6 @@ export default function HomeHeader({fetchAlarms}) {
         if (success) {
             Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Alarme salvo com sucesso!'});
             fetchAlarms();
-
         } else {
             Toast.show({ type: ALERT_TYPE.DANGER, title: 'Erro ao salvar alarme', textBody: message });
         }
@@ -24,7 +23,7 @@ export default function HomeHeader({fetchAlarms}) {
 
     return (
         <View style={styles.test}>
-            <AlertNotificationRoot theme="dark">
+            <AlertNotificationRoot>
             <View style={styles.features}>
                 <TouchableOpacity >
                     <Text style={styles.edit}> Editar </Text>
