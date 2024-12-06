@@ -16,10 +16,16 @@ export const styles = StyleSheet.create({
         width: '100%',
     },
 
+    alarmItemEditMode:{
+        justifyContent: 'space-around',
+        gap: 52,
+    },
+
     Info: {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'flex-start',
+        width: '60%',
     },
 
     alarmTextName: {
@@ -27,7 +33,8 @@ export const styles = StyleSheet.create({
         fontWeight: '700',
         color: '#fff',
     },
-    alarmText: {
+    alarmTextdistance: {
+        paddingLeft: 6,
         fontSize: 12,
         fontWeight: '400',
         color: '#fff',
