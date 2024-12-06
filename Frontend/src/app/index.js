@@ -11,6 +11,7 @@ import { getAlarms} from "../services/alarmsService";
 export default function Home() {
 
     const [alarms, setAlarms] = useState([])
+    const [editMode, setEditMode] = useState(false);
 
     useLocationPermission();
 
@@ -27,13 +28,17 @@ export default function Home() {
         fetchAlarms();
     }, []);
 
+    const toggleEditMode = () => {
+        setEditMode(!editMode);
+    }
+
     const renderItem = ({ item }) => (
-        <AlarmItem locName={item.destination} distanceRadius={item.distance} />
+        <AlarmItem locName={item.destination} distanceRadius={item.distance} editMode={editMode} alarmId={item.alarmId} fetchAlarms={fetchAlarms} />
     );
 
     return (
         <View style={styles.container}>
-            <HomeHeader fetchAlarms={fetchAlarms} />
+            <HomeHeader fetchAlarms={fetchAlarms} toggleEditMode={toggleEditMode}/>
             <View style={styles.header}>
                 <Image source={logo} style={styles.logo} />
                 <Text style={styles.name_title}> ChegaJá </Text>

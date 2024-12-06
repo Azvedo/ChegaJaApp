@@ -4,7 +4,7 @@ import { useState } from "react";
 import CreateModal from "./createModal";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
-export default function HomeHeader({fetchAlarms}) {
+export default function HomeHeader({fetchAlarms, toggleEditMode}) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -13,6 +13,7 @@ export default function HomeHeader({fetchAlarms}) {
     }
 
     const handleSaveAlarm = (success, message) => {
+        toggleModal();
         if (success) {
             Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Alarme salvo com sucesso!'});
             fetchAlarms();
@@ -25,7 +26,7 @@ export default function HomeHeader({fetchAlarms}) {
         <View style={styles.test}>
             <AlertNotificationRoot>
             <View style={styles.features}>
-                <TouchableOpacity >
+                <TouchableOpacity onPress={toggleEditMode} >
                     <Text style={styles.edit}> Editar </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={toggleModal}>

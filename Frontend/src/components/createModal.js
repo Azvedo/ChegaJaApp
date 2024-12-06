@@ -39,16 +39,13 @@ export default function CreateModal({ visible, toggleModal, handleSave }) {
             };
 
             await postAlarm(data);
-
             setDestination(null);
             setDistanceRadius(null);
             handleSave(true, 'Alarme salvo com sucesso!');
-            toggleModal();
 
         } catch (error) {
             console.error('Erro ao salvar localização:', error);
-            handleSave(false, 'Erro ao salvar alarme');
-            toggleModal();
+            handleSave(false, 'Erro ao salvar alarme');  
         }
     };
 

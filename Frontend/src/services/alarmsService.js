@@ -11,7 +11,7 @@ export const postAlarm = async (alarm) => {
         await AsyncStorage.setItem(ALARM_KEY , jsonValue);
     } catch (error) {
         console.error('Erro ao salvar alarme:', error);
-        throw error;
+        
     }
 }
 
@@ -21,7 +21,21 @@ export const getAlarms = async () => {
         return alarms ? JSON.parse(alarms) : [];
     } catch (error) {
         console.error('Erro ao buscar alarmes:', error);
-        throw error;
     }
 }
 
+
+export const deleteAlarm = async (alarmId) => {
+    try {
+        const storedAlarms = await getAlarms();
+        const alarms = storedAlarms.filter(alarm => alarm.alarmId !== alarmId);
+        const jsonValue = JSON.stringify(alarms);
+        await AsyncStorage.setItem(ALARM_KEY, jsonValue);
+        console.log('Alarme deletado com sucesso, id:', alarmId);
+    } catch (error) {
+        console.error('Erro ao deletar alarme:', error);
+    }
+
+
+
+}
