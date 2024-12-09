@@ -8,15 +8,11 @@ import { useLocationPermission } from "../hooks/useLocationPermission";
 import { getAlarms } from "../services/alarmsService";
 
 
+
 export default function Home() {
 
     const [alarms, setAlarms] = useState([])
     const [editMode, setEditMode] = useState(false);
-    const [editModalVisible, setEditModalVisible] = useState(false);
-
-    const toogleEditModal = () => {
-        setEditModalVisible(!editModalVisible);
-    }
 
     useLocationPermission();
 
@@ -38,7 +34,7 @@ export default function Home() {
     }
 
     const renderItem = ({ item }) => (
-        <AlarmItem locName={item.destination} distanceRadius={item.distance} editMode={editMode} alarmId={item.alarmId} fetchAlarms={fetchAlarms} editModalVisible={toogleEditModal}/>
+        <AlarmItem alarm={item} editMode={editMode} fetchAlarms={fetchAlarms} />
     );
 
     return (

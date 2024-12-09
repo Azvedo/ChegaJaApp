@@ -5,14 +5,20 @@ import { styles } from "./alarmItem.styles";
 import { Ionicons } from '@expo/vector-icons';
 import { deleteAlarm } from "../../services/alarmsService";
 import { useAlarmItemAnimations } from "./alarmItem.animation";
+import EditModal from "../Modals/editModal";
 
 
 
-export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, fetchAlarms, toggleEditModal }) {
+export default function AlarmItem({alarm, editMode, fetchAlarms}) {
 
     const { switchAnimatedStyle, trashAnimatedStyle, createAnimatedStyle, infoAnimatedStyle } = useAlarmItemAnimations(editMode);
-
     const [isEnabled, setIsEnabled] = useState(false);
+
+    const [editModalVisible, setEditModalVisible] = useState(false);
+
+    const toggleEditModal = () => {
+        setEditModalVisible(!editModalVisible);
+    }
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
@@ -25,7 +31,7 @@ export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, 
             {
                 text: 'Deletar',
                 onPress: () => {
-                    deleteAlarm(alarmId)
+                    deleteAlarm(alarm.alarmId)
                         .then(() => fetchAlarms());
 
                 }
@@ -43,9 +49,9 @@ export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, 
                 )}
             </Animated.View>
             <Animated.View style={[styles.Info, infoAnimatedStyle]}>
-                <Text style={styles.alarmTextName}>{locName}</Text>
+                <Text style={styles.alarmTextName}>{alarm.destination}</Text>
                 <Text style={styles.alarmTextdistance}>
-                    Distância para Alarme: {distanceRadius} m
+                    Distância para Alarme: {alarm.distance} m
                 </Text>
             </Animated.View>
             <Animated.View style={switchAnimatedStyle}>
@@ -67,6 +73,13 @@ export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, 
                     </TouchableOpacity>
                 )}
             </Animated.View>
+
+            <EditModal 
+                visible={editModalVisible} 
+                toggleEditModal={toggleEditModal} 
+                alarm={alarm} 
+                fetchAlarms={fetchAlarms}
+            />
         </View>
     );
 }

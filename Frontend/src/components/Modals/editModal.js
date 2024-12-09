@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { styles, pickerSelectStyles } from './Modals.styles';
@@ -7,10 +7,10 @@ import Map from '../Map/map';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import 'react-native-get-random-values';
 import { API_KEY } from '@env';
-import { postAlarm } from '../../services/alarmsService';
+import { updateAlarm } from '../../services/alarmsService';
 
 
-export default function CreateModal({ visible, toggleModal, handleSave }) {
+export default function EditModal({ alarm, visible, toggleEditModal, fetchAlarms }) {
     const distances = [
         { label: '1 km', value: 1000 },
         { label: '1.5 km', value: 1500 },
@@ -23,29 +23,28 @@ export default function CreateModal({ visible, toggleModal, handleSave }) {
     const [destination, setDestination] = useState(null);
     const [locName, setLocName] = useState(null);
 
-    const isValid = destination && distanceRadius && locName;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
+    const isValid = (destination && distanceRadius) || alarm;  //caso o destino e a distância sejam válidos, o botão de salvar é habilitado
 
-
-    const saveAlarm = async () => {
+    const saveUpdatedAlarm = async () => {
         try {
             const data = {
-                destination: locName,
+                destination: locName ? locName : alarm.destination,
                 currentLocation: {
-                    latitude: destination.lat,
-                    longitude: destination.lng,
+                    latitude: destination.lat ? destination.lat : alarm.currentLocation.latitude,
+                    longitude: destination.lng ? destination.lng : alarm.currentLocation.longitude,
                 },
-                distance: distanceRadius,
-                alarmId: Date.now().toString(), // Adiciona o userId ao objeto data como string
+                distance: distanceRadius ? distanceRadius : alarm.distance,
+                alarmId: alarm.alarmId,
             };
 
-            await postAlarm(data);
+            await updateAlarm(alarm.alarmId, data);
             setDestination(null);
             setDistanceRadius(null);
-            handleSave(true, 'Alarme salvo com sucesso!');
-
+            toggleEditModal();
+            fetchAlarms();
+            
         } catch (error) {
-            console.error('Erro ao salvar localização:', error);
-            handleSave(false, 'Erro ao salvar alarme');
+            console.error('Erro ao Atualizar o Alarme: ', error);
         }
     };
 
@@ -54,16 +53,16 @@ export default function CreateModal({ visible, toggleModal, handleSave }) {
             animationType="slide"
             transparent={true}
             visible={visible}
-            onRequestClose={toggleModal}
+            onRequestClose={toggleEditModal}
         >
             <View style={styles.modalContainer}>
                 <View style={styles.modalView}>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity onPress={toggleModal} style={styles.button}>
+                        <TouchableOpacity onPress={toggleEditModal} style={styles.button}>
                             <Text style={styles.buttonText}>Cancelar</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={saveAlarm}
+                            onPress={saveUpdatedAlarm}
                             style={[styles.button, { opacity: isValid ? 1 : 0.5 }]}
                             disabled={!isValid}
                         >
@@ -116,6 +115,7 @@ export default function CreateModal({ visible, toggleModal, handleSave }) {
                             placeholder={{ label: 'Selecione a distância', value: null }}
                             style={pickerSelectStyles}
                             useNativeAndroidPickerStyle={false}
+                            value={alarm}
                         />
                     </View>
                     <Map distanceRadius={distanceRadius} location={destination} />
