@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
         color: '#fff',
     },
     alarmTextdistance: {
-        paddingLeft: 6,
+        paddingLeft: 2,
         fontSize: 12,
         fontWeight: '400',
         color: '#fff',

@@ -36,6 +36,17 @@ export const deleteAlarm = async (alarmId) => {
         console.error('Erro ao deletar alarme:', error);
     }
 
+}
 
 
+export const updateAlarm = async (alarmId, alarm) => {
+    try {
+        const storedAlarms = await getAlarms();
+        const alarms = storedAlarms.map(a => a.alarmId === alarmId ? alarm : a);
+        const jsonValue = JSON.stringify(alarms);
+        await AsyncStorage.setItem(ALARM_KEY, jsonValue);
+        console.log('Alarme atualizado com sucesso, id:', alarmId);
+    } catch (error) {
+        console.error('Erro ao atualizar alarme:', error);
+    }
 }
