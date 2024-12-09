@@ -3,12 +3,12 @@ import Animated from 'react-native-reanimated';
 import { Text, View, Switch, TouchableOpacity, Alert } from "react-native";
 import { styles } from "./alarmItem.styles";
 import { Ionicons } from '@expo/vector-icons';
-import { deleteAlarm } from "../services/alarmsService";
+import { deleteAlarm } from "../../services/alarmsService";
 import { useAlarmItemAnimations } from "./alarmItem.animation";
 
 
 
-export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, fetchAlarms }) {
+export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, fetchAlarms, toggleEditModal }) {
 
     const { switchAnimatedStyle, trashAnimatedStyle, createAnimatedStyle, infoAnimatedStyle } = useAlarmItemAnimations(editMode);
 
@@ -62,7 +62,7 @@ export default function AlarmItem({ locName, distanceRadius, editMode, alarmId, 
             </Animated.View>
             <Animated.View style={createAnimatedStyle}>
                 {editMode && (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={toggleEditModal}>
                         <Ionicons name="create-outline" size={24} color="white" />
                     </TouchableOpacity>
                 )}
