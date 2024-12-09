@@ -1,10 +1,10 @@
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from "react";
-import CreateModal from "./createModal";
+import CreateModal from "../Modals/createModal";
 import { ALERT_TYPE, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 
-export default function HomeHeader({fetchAlarms, toggleEditMode}) {
+export default function HomeHeader({ fetchAlarms, toggleEditMode }) {
 
     const [modalVisible, setModalVisible] = useState(false);
 
@@ -15,7 +15,7 @@ export default function HomeHeader({fetchAlarms, toggleEditMode}) {
     const handleSaveAlarm = (success, message) => {
         toggleModal();
         if (success) {
-            Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Alarme salvo com sucesso!'});
+            Toast.show({ type: ALERT_TYPE.SUCCESS, title: 'Alarme salvo com sucesso!' });
             fetchAlarms();
         } else {
             Toast.show({ type: ALERT_TYPE.DANGER, title: 'Erro ao salvar alarme', textBody: message });
@@ -25,20 +25,20 @@ export default function HomeHeader({fetchAlarms, toggleEditMode}) {
     return (
         <View style={styles.test}>
             <AlertNotificationRoot>
-            <View style={styles.features}>
-                <TouchableOpacity onPress={toggleEditMode} >
-                    <Text style={styles.edit}> Editar </Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={toggleModal}>
-                    <Ionicons name="add" size={32} color="white" />
-                </TouchableOpacity>
+                <View style={styles.features}>
+                    <TouchableOpacity onPress={toggleEditMode} >
+                        <Text style={styles.edit}> Editar </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={toggleModal}>
+                        <Ionicons name="add" size={32} color="white" />
+                    </TouchableOpacity>
 
-                <CreateModal
-                    visible={modalVisible}
-                    toggleModal={toggleModal}
-                    handleSave={handleSaveAlarm}
-                />
-            </View>
+                    <CreateModal
+                        visible={modalVisible}
+                        toggleModal={toggleModal}
+                        handleSave={handleSaveAlarm}
+                    />
+                </View>
             </AlertNotificationRoot>
         </View>
     );

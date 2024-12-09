@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { Text, View, Image, FlatList } from "react-native";
 import logo from '../../assets/logo.png';
-import HomeHeader from "../components/homeHeader";
-import AlarmItem from "../components/alarmItem";
+import HomeHeader from "../components/Header/homeHeader";
+import AlarmItem from "../components/AlarmItem/alarmItem";
 import { styles } from './index.styles';
 import { useLocationPermission } from "../hooks/useLocationPermission";
-import { getAlarms} from "../services/alarmsService";
+import { getAlarms } from "../services/alarmsService";
 
 
 export default function Home() {
 
     const [alarms, setAlarms] = useState([])
     const [editMode, setEditMode] = useState(false);
+    const [editModalVisible, setEditModalVisible] = useState(false);
+
+    const toogleEditModal = () => {
+        setEditModalVisible(!editModalVisible);
+    }
 
     useLocationPermission();
 
@@ -33,12 +38,12 @@ export default function Home() {
     }
 
     const renderItem = ({ item }) => (
-        <AlarmItem locName={item.destination} distanceRadius={item.distance} editMode={editMode} alarmId={item.alarmId} fetchAlarms={fetchAlarms} />
+        <AlarmItem locName={item.destination} distanceRadius={item.distance} editMode={editMode} alarmId={item.alarmId} fetchAlarms={fetchAlarms} editModalVisible={toogleEditModal}/>
     );
 
     return (
         <View style={styles.container}>
-            <HomeHeader fetchAlarms={fetchAlarms} toggleEditMode={toggleEditMode}/>
+            <HomeHeader fetchAlarms={fetchAlarms} toggleEditMode={toggleEditMode} />
             <View style={styles.header}>
                 <Image source={logo} style={styles.logo} />
                 <Text style={styles.name_title}> ChegaJá </Text>
