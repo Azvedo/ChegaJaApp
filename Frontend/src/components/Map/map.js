@@ -5,13 +5,11 @@ import { watchPositionAsync, LocationAccuracy } from "expo-location";
 
 
 export default function Map({distanceRadius , location}) {
-
+    const mapRef = useRef(null);
     const [loc, setLoc] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const mapRef = useRef(null);
-
-    useEffect(() => {
+    useEffect(() => {        
         const startWatching = async () => {
             const locationSubscription = await watchPositionAsync({
                 accuracy: LocationAccuracy.Highest,
@@ -22,9 +20,20 @@ export default function Map({distanceRadius , location}) {
                 setLoading(false);
             })
         }
-
         startWatching();
+
     }, []);
+
+    useEffect(() => {
+        if (mapRef.current && location) {
+            mapRef.current.animateToRegion({
+                latitude: location.lat,
+                longitude: location.lng,
+                latitudeDelta: 0.005,
+                longitudeDelta: 0.005,
+            }, 1000);
+        }
+    }, [location, distanceRadius]);
 
 
     if (loading || !loc || !location) {
