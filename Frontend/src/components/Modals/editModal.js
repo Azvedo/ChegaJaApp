@@ -115,7 +115,7 @@ export default function EditModal({ alarm, visible, toggleEditModal, fetchAlarms
                             placeholder={{ label: 'Selecione a distância', value: null }}
                             style={pickerSelectStyles}
                             useNativeAndroidPickerStyle={false}
-                            value={alarm}
+                            value={alarm.distance}
                         />
                     </View>
                     <Map distanceRadius={distanceRadius} location={destination} />
