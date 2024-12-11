@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import Animated from 'react-native-reanimated';
 import { Text, View, Switch, TouchableOpacity, Alert } from "react-native";
 import { styles } from "./alarmItem.styles";
@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { deleteAlarm } from "../../services/alarmsService";
 import { useAlarmItemAnimations } from "./alarmItem.animation";
 import EditModal from "../Modals/editModal";
+import {startLocationTracking, watchPosition} from "../../utils/locationMonitor";
 
 
 
@@ -19,6 +20,19 @@ export default function AlarmItem({alarm, editMode, fetchAlarms}) {
     const toggleEditModal = () => {
         setEditModalVisible(!editModalVisible);
     }
+
+    useEffect(() => {
+        if (isEnabled) {
+            watchPosition(alarm.currentLocation, () => {
+                Alert.alert('Alarme Chegou', `Você chegou em ${alarm.destination}`);
+                setIsEnabled(false);
+            }, alarm.distance);
+                     
+            // startLocationTracking(alarm.currentLocation, () => {
+            //     Alert.alert('Alarme Chegou', `Você chegou em ${alarm.destination}`);
+            // }, alarm.distance);
+        }
+    }, [isEnabled]);
 
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
